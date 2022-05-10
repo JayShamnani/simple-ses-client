@@ -1,5 +1,6 @@
 # simple-mail-client
 
+**NOTE:** This project is under development
 ## Project setup
 ```
 yarn install
