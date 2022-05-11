@@ -5,6 +5,7 @@ import boto3
 from uuid import uuid4
 import time
 import re
+import os
 
 def lambda_handler(event, context):
 
@@ -48,6 +49,7 @@ def lambda_handler(event, context):
         
         print("Generated DB Data:",json.dumps(email_dict))
         put_email_in_db(email_dict)
+        delete_object_from_s3(bucket_name, object_key)
         
     return {
         'statusCode': 200,
@@ -64,7 +66,7 @@ def get_s3_object(bucket_name, object_key):
 def put_email_in_db(data):
 
     client = boto3.resource('dynamodb')
-    table = client.Table("email_data")
+    table = client.Table(os.environ['EMAIL_TABLE'])
     response = table.put_item(Item=data)
 
 def delete_object_from_s3(bucket_name, object_key):
