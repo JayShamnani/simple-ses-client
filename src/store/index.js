@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { createStore } from 'vuex'
 
+import url from './url.config';
+
+axios.defaults.baseURL = url;
+
 export default createStore({
   state: {
     userTokens: {},
@@ -13,9 +17,10 @@ export default createStore({
     userProfile: state => state.userProfile,
   },
   actions: {
-    async signIn({ commit }, { email, password }) {
-      const response = await axios.post('/api/sign-in', { email, password });
+    async signIn({ commit }, { username, password }) {
+      const response = await axios.post('/api/sign-in', { username, password });
       commit('setUserTokens', response.data);
+      return response;
     },
     async signUp({ commit }, { email, password, is_admin }) {
       const response = await axios.post('/api/create-user', { email, password, is_admin });
@@ -34,8 +39,9 @@ export default createStore({
       commit('setUserProfile', response.data);
     },
     async getEmails({ commit }, { access_token }) {
-      const response = await axios.post('/api/get-emails', { headers: { access_token } });
+      const response = await axios.post('/api/get-emails', { access_token });
       commit('setUserMails', response.data);
+      return response;
     },
   },
   mutations: {

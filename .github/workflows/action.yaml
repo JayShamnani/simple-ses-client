@@ -1,0 +1,14 @@
+on: push
+name: Build Vue
+jobs:
+  build_vue:
+    name: Build Vue Application
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Ui
+      uses: xRealNeon/VuePagesAction@1.0.1
+      with:
+        username: 'JayShamnani'
+        reponame: 'simple-ses-client'
+        token: ${{ secrets.GITHUB_TOKEN }}

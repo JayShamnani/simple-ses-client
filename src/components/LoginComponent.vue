@@ -19,7 +19,7 @@
             <input type="password" v-model="password"  required />
           </div>
           <div class="col">
-            <button class="btn btn-outline-light">Login</button>
+            <button class="btn btn-outline-light" @click="login">Login</button>
           </div>
         </div>
       </div>
@@ -41,13 +41,15 @@ export default {
   },
   computed: mapGetters(["userTokens"]),
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["signIn"]),
     async login() {
       const user = {
         username: this.email,
         password: this.password,
       };
-      const response = await this.login(user);
+      const response = await this.signIn(user);
+      localStorage.setItem("AuthenticationResult", JSON.stringify(response.data.AuthenticationResult));
+      localStorage.setItem("ChallengeParameters", JSON.stringify(response.data.ChallengeParameters));
       console.log("response", response);
       if (response.status === 200) {
         this.$router.push("/");
