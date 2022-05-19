@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunksimple_mail_client"]=self["webpackChunksimple_mail_client"]||[]).push([[443],{381:function(n,e,i){i.r(e),i.d(e,{default:function(){return f}});var t=i(252);const a={class:"about"},s=(0,t._)("h1",null,"This is an about page",-1),u=[s];function l(n,e){return(0,t.wg)(),(0,t.iD)("div",a,u)}var c=i(744);const r={},o=(0,c.Z)(r,[["render",l]]);var f=o}}]);
+//# sourceMappingURL=about.88a83630.js.map
