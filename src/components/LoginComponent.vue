@@ -10,13 +10,13 @@
             <label>Username</label>
           </div>
           <div class="col">
-            <input type="email" required />
+            <input type="email" v-model="email" required />
           </div>
           <div class="col">
             <label>Password</label>
           </div>
           <div class="col">
-            <input type="password" required />
+            <input type="password" v-model="password"  required />
           </div>
           <div class="col">
             <button class="btn btn-outline-light">Login</button>
@@ -28,13 +28,31 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import image from "../assets/logo.png";
 export default {
   name: "loginComp",
   data() {
     return {
       image: image,
+      email: "",
+      password: ""
     };
+  },
+  computed: mapGetters(["userTokens"]),
+  methods: {
+    ...mapActions(["login"]),
+    async login() {
+      const user = {
+        username: this.email,
+        password: this.password,
+      };
+      const response = await this.login(user);
+      console.log("response", response);
+      if (response.status === 200) {
+        this.$router.push("/");
+      }
+    },
   },
 };
 </script>
@@ -57,7 +75,7 @@ export default {
 }
 
 .col input {
-	border-radius: 8px;
+	border-radius: 4px;
 	width: 60%;
 	margin-bottom: 5px;
 }
