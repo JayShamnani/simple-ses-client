@@ -7,19 +7,23 @@
             <img :src="image" class="logo" />
           </div>
           <div class="col">
-            <label>Username</label>
+              <h3>Welcome to Unexpressed Mailing System!!!</h3>
+          </div>
+          <hr>
+          <div class="col">
+            <label>New Password</label>
           </div>
           <div class="col">
-            <input type="email" v-model="email" required />
+            <input type="password" v-model="newPassword" required />
           </div>
           <div class="col">
-            <label>Password</label>
+            <label>New Password (Confirm)</label>
           </div>
           <div class="col">
-            <input type="password" v-model="password"  required />
+            <input type="password" v-model="newPasswordConfirm" required />
           </div>
           <div class="col">
-            <button class="btn btn-outline-light" @click="login">Login</button>
+            <button class="btn btn-outline-light" @click="save">Save Password</button>
           </div>
         </div>
       </div>
@@ -30,31 +34,29 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import image from "../assets/logo.png";
+
 export default {
-  name: "loginComp",
   data() {
     return {
       image: image,
-      email: "",
-      password: ""
+      newPassword: "",
+      newPasswordConfirm: "",
     };
   },
-  computed: mapGetters(["userTokens"]),
+    computed: mapGetters(["userTokens"]),
   methods: {
-    ...mapActions(["signIn"]),
-    async login() {
+    ...mapActions(["respondToAuthChallenge"]),
+    async save() {
       const user = {
         username: this.email,
-        password: this.password,
+        new_password: this.password,
+        session: ''
       };
-      const response = await this.signIn(user);
+      const response = await this.respondToAuthChallenge(user);
       localStorage.setItem("AuthenticationResult", JSON.stringify(response.data.AuthenticationResult));
       localStorage.setItem("ChallengeParameters", JSON.stringify(response.data.ChallengeParameters));
       console.log("response", response);
-      if (response.data.ChallengeParameters.ChallengeName == "NEW_PASSWORD_REQUIRED") {
-        this.$router.push("/createNewPassword");
-      }
-      else if (response.status === 200) {
+      if (response.status === 200) {
         this.$router.push("/");
       }
     },
@@ -62,7 +64,7 @@ export default {
 };
 </script>
 
-<style  scoped>
+<style>
 .logo {
   max-width: 200px;
 }
@@ -80,16 +82,16 @@ export default {
 }
 
 .col input {
-	border-radius: 4px;
-	width: 60%;
-	margin-bottom: 5px;
+  border-radius: 4px;
+  width: 60%;
+  margin-bottom: 5px;
 }
 .col label {
-	width: 100%;
-	margin-bottom: 5px;
-	font-size: 1.2rem;
+  width: 100%;
+  margin-bottom: 5px;
+  font-size: 1.2rem;
 }
 .col button {
-	margin: 20px 0px;
+  margin: 20px 0px;
 }
 </style>

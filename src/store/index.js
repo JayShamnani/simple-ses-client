@@ -22,12 +22,13 @@ export default createStore({
       commit('setUserTokens', response.data);
       return response;
     },
-    async signUp({ commit }, { email, password, is_admin }) {
-      const response = await axios.post('/api/create-user', { email, password, is_admin });
+    async signUp({ commit }, { username, email, password, is_admin, first_name, last_name, phone_number }) {
+      const response = await axios.post('/api/create-user', { username, password, email, is_admin, first_name, last_name, phone_number });
       commit('setUserTokens', response.data);
+      return response;
     },
-    async respondToAuthChallenge({ commit }, { access_token, email, challenge_name, challenge_response }) {
-      const response = await axios.post('/api/respond-to-auth-challenge', { access_token, email, challenge_name, challenge_response });
+    async respondToAuthChallenge({ commit }, { username, new_password, session }) {
+      const response = await axios.post('/api/respond-to-auth-challenge', { username, new_password, session });
       commit('setUserTokens', response.data);
     },
     async changePassword({ commit }, { access_token, old_password, new_password }) {
