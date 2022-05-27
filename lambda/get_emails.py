@@ -1,11 +1,28 @@
 import json
 import boto3
 import os
+from boto3.dynamodb.types import TypeDeserializer
+
+def ddb_deserialize(r, type_deserializer = TypeDeserializer()):
+    return type_deserializer.deserialize({"M": r})
+    
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return (str(o) for o in [o])
+        return super(DecimalEncoder, self).default(o)
 
 def lambda_handler(event, callback):
     
     response = dict()
-    response['headers'] = {'Content-Type': 'application/json'}
+    response['headers'] = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Request-Method': ' OPTIONS, POST',
+        'Access-Control-Allow-Headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+        
+    }
     
     _body = json.loads(event['body'])
     _cognito_response = ''
@@ -62,8 +79,10 @@ def lambda_handler(event, callback):
         
         )
     
-    print(response_iterator.build_full_result())
-    return {
-        'statusCode': 200,
-        'body': json.dumps(response_iterator.build_full_result())
-    }
+    items = response_iterator.build_full_result()
+    parsed_response = [ ddb_deserialize(r) for r in items['Items'] ]
+    
+    response['body'] = json.dumps(parsed_response, indent=4, sort_keys=True, default=str, cls=DecimalEncoder)
+    response['statusCode'] = 200
+    print(response)
+    return response
